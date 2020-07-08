@@ -2,27 +2,34 @@ console.log('%c HI', 'color: firebrick')
 
 document.addEventListener('DOMContentLoaded', function () {
 // ^ need for "on page load"
-function challengOne() {
+  fetchImages();
+  fetchBreeds()
+});
+
+function fetchImages() { //challenge 1
   // const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
   // could write fetch(imgURL)
   fetch("https://dog.ceo/api/breeds/image/random/4")
     .then(function(response) {
       return response.json();
     })
+    // could write .then(response => { return response.json() })
     .then(function(jsonResults) {
-      return jsonResults.message.forEach(function(dogImage) {
-        return addImage(dogImage)
+      return showImages(jsonResults)
       })
-    })
-  function addImage(dogPicUrl) {
-    let container = document.querySelector('#dog-image-container');
-    let newImage = document.createElement('img');
-    newImage.src = dogPicUrl;
-    container.appendChild(newImage);
-  }
+    }
+
+function showImages(dogImagesUrl) {
+  let container = document.querySelector('#dog-image-container');
+
+  dogImagesUrl.message.forEach(link => {
+    let image = document.createElement('img');
+    image.src = link
+    container.appendChild(image) //add image to container
+  })
 }
 
-function challengeTwo() {
+function fetchBreeds() { //challenge 2
 //const breedUrl = 'https://dog.ceo/api/breeds/list/all'
   fetch('https://dog.ceo/api/breeds/list/all')
     .then(function(response) {
@@ -31,28 +38,31 @@ function challengeTwo() {
     .then(function(jsonResults) {
     return showBreeds(jsonResults)
     })
-
-  function showBreeds(breeds) {
-    breedList = document.getElementById("dog-breeds")
-
-    for (breed in breeds.message) {
-      const list = document.createElement("li")
-      list.innerText = breed
-      list.classList.add("dog-breed")
-      breedList.appendChild(list)
-    }
   }
 
-  function changeFilter(e) {
-    selectedLetter = e.target.value
-    breedListItems = document.getElementsByClassName("dog-breed")
+function showBreeds(breeds) {
+  let breedList = document.getElementById("dog-breeds")
 
-    for (const breedListItem of breedListItems ) {
-      if (breedListItem.innerText[0] != selectedLetter) {
-        breedListItem.style.display = "none"
-      } else {
-        breedListItem.style.display = "block"
-      }
+  for (const breed in breeds.message) { // iterate through breeds.message and store in new const breed
+    const list = document.createElement("li")
+    list.innerText = breed
+    list.classList.add("dog-breed") // for every list item we create we are giving it a class name so we can select them later
+    breedList.appendChild(list) // add list to breedList
+  }
+}
+
+function changeFilter(event) { //challenge 4
+  selectedLetter = event.target.value
+    //even is the drop down of selecting a letter
+  breedListItems = document.getElementsByClassName("dog-breed")
+
+  for (const breedListItem of breedListItems ) { //iterating over the breedlistitems(plural(all)) and saving in a new cont of singular breedlistitem
+    if (breedListItem.innerText[0] != selectedLetter) {
+      //if the first item of the list is not equal to the selected item(letter)
+      breedListItem.style.display = "none"
+
+    } else {
+      breedListItem.style.display = "block"
     }
   }
 }
